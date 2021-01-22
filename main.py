@@ -1,11 +1,8 @@
 import xxtea
-import zlib
 import os
 import traveDir
 import sys
 import random
-import zipfile
-from io import BytesIO
 
 """1.Print Log"""
 try:
