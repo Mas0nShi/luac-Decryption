@@ -109,11 +109,7 @@ def decrypt(filePath, key, sign):
     # 1.xxtea decrypt
     dec_data = xxtea.decrypt(data=data[len(sign):], key=key[:16], padding=False,rounds=0)
     # 2.determine file type
-    try:
-        dec_data = bytes(dec_data)
-    except UnicodeDecodeError:
-        ColorPrinter.print_red_text("[ERROR] UnicodeDecodeError Decrypting flie:{0}".format(filePath))
-        dec_data = "ERROR"
+    dec_data = bytes(dec_data)
     return dec_data
 
 
