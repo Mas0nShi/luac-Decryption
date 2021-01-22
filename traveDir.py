@@ -1,7 +1,7 @@
 import os
 
 _files = []
-_exts = [".jsc", ".luac"]
+_exts = [".luac"]
 
 def deep_iterate_dir(rootDir):
     for lists in os.listdir(rootDir):
