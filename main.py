@@ -80,8 +80,8 @@ class ColorPrinter:
         print("\033[1;37m %s \033[0m" % content, end=end),
 
 
-def read_jsc_file(path):
-    """Read .jsc file in this path."""
+def read_luac_file(path):
+    """Read .luac file in this path."""
     f = open(path, "rb")
     data = f.read()
     f.close()
@@ -105,7 +105,7 @@ def save_file(fileDir, outData):
 
 def decrypt(filePath, key, sign):
     """The main process to decryption."""
-    data = read_jsc_file(path=filePath)
+    data = read_luac_file(path=filePath)
     # 1.xxtea decrypt
     dec_data = xxtea.decrypt(data=data[len(sign):], key=key[:16], padding=False,rounds=0)
     # 2.determine file type
