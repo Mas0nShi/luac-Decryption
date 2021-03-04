@@ -1,4 +1,5 @@
 ﻿# luac-Decryption
+⛔For xxtea only, nothing can be done with bytecode⛔
 
 ⚡This is a script that decrypts the coco2dx-luac .luac file⚡
 
