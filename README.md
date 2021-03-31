@@ -18,6 +18,6 @@
  Nothing.
  Welcome to submit issue.
 
-![example](https://github.com/shiyingqi/luac-Decryption/blob/master/example.png)
+![example](https://github.com/Mas0nShi/luac-Decryption/blob/master/example.png)
 
 If you have any questions, please contact [ MasonShi@88.com ]
