@@ -1,6 +1,8 @@
 ﻿# luac-Decryption
 ⛔For xxtea only, nothing can be done with bytecode⛔
 
+✈If you encounter **luajit**, try using [luajit-decompiler](https://github.com/Mas0nShi/luajit-decompiler) ✈
+
 ⚡This is a script that decrypts the coco2dx-luac .luac file⚡
 
 🌈The core process is the decryption of **`XXTEA`**.🌈
