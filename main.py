@@ -1,8 +1,13 @@
 import xxtea
 import os
-import traveDir
+from traveDir import depthIteratePath
 import sys
 import random
+from loguru import logger
+from io import BytesIO
+import zipfile
+
+dIP = depthIteratePath([".luac"])
 
 """1.Print Log"""
 try:
@@ -80,79 +85,106 @@ class ColorPrinter:
         print("\033[1;37m %s \033[0m" % content, end=end),
 
 
-def read_luac_file(path):
-    """Read .luac file in this path."""
+def readJscFile(path):
+    """Read .jsc file in this path."""
     f = open(path, "rb")
     data = f.read()
     f.close()
     return data
 
 
-def save_file(fileDir, outData):
+def saveFile(saveData, fileDir):
     """Save the decrypted data on the same relative path."""
     rootPath = os.path.split(fileDir)[0]
-    try:
-        os.makedirs(rootPath)
-    except OSError:
-        if not os.path.exists(rootPath):
-            raise Exception("Error: create directory %s failed." % rootPath)
+    if not os.path.exists(rootPath):
+        try:
+            os.makedirs(rootPath)
+        except OSError:
+            if not os.path.exists(rootPath):
+                raise Exception("Error: create directory %s failed." % rootPath)
+
     if fileDir.endswith("c"):
         file = fileDir[:-1]
+    else:
+        file = fileDir
     with open(file, "wb") as fd:
-        fd.write(outData)
+        fd.write(saveData)
     fd.close()
 
 
 def decrypt(filePath, key, sign):
     """The main process to decryption."""
-    data = read_luac_file(path=filePath)
+    data = readJscFile(path=filePath)
     # 1.xxtea decrypt
-    dec_data = xxtea.decrypt(data=data[len(sign):], key=key[:16], padding=False,rounds=0)
+    if len(key) < 16:
+        key += "\0" * (16 - len(key))  # padding \0
+
+    dec_data = xxtea.decrypt(data=data[len(sign):], key=key[:16], padding=False, rounds=0)
     # 2.determine file type
     dec_data = bytes(dec_data)
     return dec_data
 
 
-def batch_decrypt(srcDir, xxtea_key, sign):
-    """Batch decrypt files."""
-    if not os.path.exists(srcDir):
-        ColorPrinter.print_white_text("Error:FileNotFound")
-        exit(1)
-    rootDir = os.path.split(srcDir)[0]
-    outDir = rootDir
-    if outDir[-2:-1] != "\\":
-        outDir += "\\"
-    outDir += "out\\"
-    traveDir.deep_iterate_dir(srcDir)
-    files_list = traveDir.getfileslist()
-    for file_path in files_list:
-        ColorPrinter.print_green_text("Decrypting flie:{0}".format(file_path))
-        decData = decrypt(filePath=file_path, key=xxtea_key, sign=sign)
-        outFile = outDir + file_path[len(rootDir + os.path.split(srcDir)[1]) + 1:]
-        save_file(fileDir=outFile, outData=decData)
-        print("        Save flie:{0}".format(outFile))
+def batchDecrypt(srcDir, xxteaKey, sign):
+    if not os.path.exists(srcDir):  # path exist
+        logger.error("FileNotFound")
+        exit(-1)
+    isFile = os.path.isfile(srcDir)  # is files or dirs
+
+    dirPath = os.path.dirname(srcDir)  # dir name ...xx/a.luac =>  ...xx/
+    outPath = os.path.join(dirPath, "out")  # out path xx/out
+    if isFile:
+        filePathArr = [srcDir]  # get single file
+    else:
+        filePathArr = dIP.getDepthDir(srcDir)  # get fileTrees
+
+    for filePath in filePathArr:
+        decData = decrypt(filePath, xxteaKey, sign)  # decrypt core
+        fileBaseName = os.path.basename(filePath)  # xxx/game.zip => game.zip
+        zipDirName = os.path.splitext(fileBaseName)[0]  # game.zip => game
+
+        if decData[:2] == b"PK":
+            logger.info("decrypt file is ZIP, decompressing...")
+
+            decompressPath = os.path.join(outPath, zipDirName)  # zip decompress path
+
+            if not os.path.exists(decompressPath):
+                os.mkdir(decompressPath)  # make dir
+
+            fio = BytesIO(decData)  # read bytesIO
+            fzip = zipfile.ZipFile(file=fio)  # func zip
+            for fileName in fzip.namelist():
+                fzip.extract(fileName, decompressPath)  # save file in zip
+                logger.success("Save flie:{0}".format(os.path.join(decompressPath, fileName)))
+
+        else:
+
+            saveFilePath = outPath + filePath.split(srcDir)[1]  # save path
+            saveFile(decData, saveFilePath)  # save file
+            logger.success("Save flie:{0}".format(saveFilePath))
 
 
 def main():
-    ColorPrint = ColorPrinter()
     if len(sys.argv) != 5:
         print("\nThis is decrypt for Coco2d-luac .luac.")
-        ColorPrint.print_white_text("Usage : ")
+        ColorPrinter.print_white_text("Usage : ")
         print("        python {0} [-d] [xxteaKey] [sign] [jscDir]".format(sys.argv[0]))
-        ColorPrint.print_white_text("Example : ")
+        ColorPrinter.print_white_text("Example : ")
         print(r"        python {0} -d e73c83539f2e65ab159 b4d6f1b968 C:\DecJsc-master\src".format(sys.argv[0]))
-        ColorPrint.print_white_text("Tips : ")
+        ColorPrinter.print_white_text("Tips : ")
         print("        -d or -decrypt [decrypt]")
+        print("        Supports folders and individual LUAC or ZIP files")
         print("        If you have any questions, please contact [ MasonShi@88.com ]\n")
         exit(1)
+
     instruct = sys.argv[1]
     xxtea_key = sys.argv[2]
     sign = sys.argv[3]
     srcDir = sys.argv[4]
     if instruct[1:2] == "d":
         show_banner()
-        batch_decrypt(srcDir=srcDir, xxtea_key=xxtea_key, sign=sign)
-        ColorPrint.print_white_text("Running exit...\n")
+        batchDecrypt(srcDir=srcDir, xxteaKey=xxtea_key, sign=sign)
+        ColorPrinter.print_white_text("Running exit...\n")
 
 
 if __name__ == "__main__":
