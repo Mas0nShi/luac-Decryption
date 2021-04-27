@@ -147,7 +147,8 @@ def batchDecrypt(srcDir, xxteaKey, sign):
             logger.info("decrypt file is ZIP, decompressing...")
 
             decompressPath = os.path.join(outPath, zipDirName)  # zip decompress path
-
+            if not os.path.exists(outPath):
+                os.mkdir(outPath)  # make dir
             if not os.path.exists(decompressPath):
                 os.mkdir(decompressPath)  # make dir
 
