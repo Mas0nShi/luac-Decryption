@@ -186,7 +186,7 @@ def main():
     if instruct[1:2] == "d":
         show_banner()
         batchDecrypt(srcDir=srcDir, xxteaKey=xxtea_key, sign=sign)
-        ColorPrinter.print_white_text("        Running exit...\n")
+        ColorPrinter.print_white_text("\n        Running exit...\n")
 
 
 if __name__ == "__main__":
