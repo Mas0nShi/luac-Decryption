@@ -18,7 +18,9 @@
         The output folder is located in the same directory as the LUAC folder.
 
 ### ❗Waiting for repair and Known errors :
- Nothing.
+
+ -[x] zip decompress
+
  Welcome to submit issue.
 
 ![example](https://github.com/Mas0nShi/luac-Decryption/blob/master/example.png)
