@@ -13,6 +13,7 @@
         python main.py -d e73c83539f2e65ab159 b4d6f1b968 C:\DecJsc-master\src
 ### Tips :
         -d or -decrypt [decrypt]
+        Supports folders and individual LUAC or ZIP files
 ### Outputs :
         The output folder is located in the same directory as the LUAC folder.
 
