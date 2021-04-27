@@ -140,13 +140,14 @@ def batchDecrypt(srcDir, xxteaKey, sign):
 
     for filePath in filePathArr:
         decData = decrypt(filePath, xxteaKey, sign)  # decrypt core
-        fileBaseName = os.path.basename(filePath)  # xxx/game.zip => game.zip
-        zipDirName = os.path.splitext(fileBaseName)[0]  # game.zip => game
 
         if decData[:2] == b"PK":
             logger.info("decrypt file is ZIP, decompressing...")
 
+            fileBaseName = os.path.basename(filePath)  # xxx/game.zip => game.zip
+            zipDirName = os.path.splitext(fileBaseName)[0]  # game.zip => game
             decompressPath = os.path.join(outPath, zipDirName)  # zip decompress path
+
             if not os.path.exists(outPath):
                 os.mkdir(outPath)  # make dir
             if not os.path.exists(decompressPath):
