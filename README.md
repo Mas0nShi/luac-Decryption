@@ -8,9 +8,10 @@
 🌈The core process is the decryption of **`XXTEA`**.🌈
 
 ### Usage :
-        python main.py [-d] [xxteaKey] [sign] [jscDir]
+        python main.py [-d] [xxteaKey] [sign] [jscDir/zipFile]
 ### Example :
         python main.py -d e73c83539f2e65ab159 b4d6f1b968 C:\DecJsc-master\src
+        python main.py -d e73c83539f2e65ab159 b4d6f1b968 C:\DecJsc-master\game.zip
 ### Tips :
         -d or -decrypt [decrypt]
         Supports folders and individual LUAC or ZIP files
@@ -19,7 +20,7 @@
 
 ### ❗Waiting for repair and Known errors :
 
- -[x] zip decompress
+ -[x] zip files decompress
 
  Welcome to submit issue.
 
