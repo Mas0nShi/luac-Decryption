@@ -157,22 +157,23 @@ def batchDecrypt(srcDir, xxteaKey, sign):
             fzip = zipfile.ZipFile(file=fio)  # func zip
             for fileName in fzip.namelist():
                 fzip.extract(fileName, decompressPath)  # save file in zip
-                logger.success("Save flie:{0}".format(os.path.join(decompressPath, fileName)))
+                logger.success("Save flie: {0}".format(os.path.join(decompressPath, fileName)))
 
         else:
 
             saveFilePath = outPath + filePath.split(srcDir)[1]  # save path
             saveFile(decData, saveFilePath)  # save file
-            logger.success("Save flie:{0}".format(saveFilePath))
+            logger.success("Save flie: {0}".format(saveFilePath))
 
 
 def main():
     if len(sys.argv) != 5:
         print("\nThis is decrypt for Coco2d-luac .luac.")
         ColorPrinter.print_white_text("Usage : ")
-        print("        python {0} [-d] [xxteaKey] [sign] [jscDir]".format(sys.argv[0]))
+        print("        python {0} [-d] [xxteaKey] [sign] [jscDir/zipFile]".format(sys.argv[0]))
         ColorPrinter.print_white_text("Example : ")
         print(r"        python {0} -d e73c83539f2e65ab159 b4d6f1b968 C:\DecJsc-master\src".format(sys.argv[0]))
+        print(r"        python {0} -d e73c83539f2e65ab159 b4d6f1b968 C:\DecJsc-master\game.zip".format(sys.argv[0]))
         ColorPrinter.print_white_text("Tips : ")
         print("        -d or -decrypt [decrypt]")
         print("        Supports folders and individual LUAC or ZIP files")
