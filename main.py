@@ -116,7 +116,9 @@ def decrypt(filePath, key, sign):
     """The main process to decryption."""
     data = readJscFile(path=filePath)
     # 1.xxtea decrypt
-    if len(key) < 16:
+    if key == "NONE":
+        key = "\x00" * 16
+    elif len(key) < 16:
         key += "\0" * (16 - len(key))  # padding \0
 
     dec_data = xxtea.decrypt(data=data[len(sign):], key=key[:16], padding=False, rounds=0)
@@ -176,6 +178,7 @@ def main():
         print(r"        python {0} -d e73c83539f2e65ab159 b4d6f1b968 C:\DecJsc-master\game.zip".format(sys.argv[0]))
         ColorPrinter.print_white_text("Tips : ")
         print("        -d or -decrypt [decrypt]")
+        print("        If the TEA is 16 bytes of \\x00, please fill in NONE")
         print("        Supports folders and individual LUAC or ZIP files")
         print("        If you have any questions, please contact [ MasonShi@88.com ]\n")
         exit(1)
